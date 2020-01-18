@@ -4,7 +4,7 @@
  * @Author: lxw
  * @Date: 2020-01-15 20:56:55
  * @LastEditors  : lxw
- * @LastEditTime : 2020-01-17 22:02:52
+ * @LastEditTime : 2020-01-18 22:29:10
  -->
 <!DOCTYPE html>
 <html lang="en">
@@ -15,13 +15,14 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <meta name="keywords" content="简易计时器、js面向对象开发、jsdoc生成接口文档说明文档">
     <title>简易计时器——js面向对象</title>
+    <link rel="shortcut icon" href="./imgs/counter.png" type="image/x-icon">
     <link rel="stylesheet" href="./css/index.css">
 </head>
 
 <body>
     <div id="clock-wrap" class="clock-wrap">
         <h2>Simple counter</h2>
-        <h3>js面向对象开发——动态原型模式实现的一个简易计数器 + Jsdoc生成说明文档 + Jsdo 优化vsocde代码智能提示，提高模块化开发的效率</h3>
+        <h3>js面向对象开发——动态原型模式实现的一个简易计数器 + Jsdoc生成说明文档 <span class="link-text" title="跳转到简易文档" id="link-text">link</span>  + Jsdo 优化vsocde代码智能提示，提高模块化开发的效率</h3>
         <div class="time">
             <div><span id="counter">00</span><span>gogogo</span></div>
         </div>
@@ -87,6 +88,8 @@
         const endnumSelect = $lxw.queryEle('#endNum')
         const linkButton = $lxw.queryEle('#link')
         const couEle = $lxw.queryEle('#counter')
+        const link = $lxw.queryEle('#link')
+        const linkDoc = $lxw.queryEle('#link-text')
 
         // 开始按钮点击--处理程序
         function start() {
@@ -140,16 +143,28 @@
             let val = $lxw.getAtr(seleObj,'options')[ind].value
             cou1.setEndNum(parseInt(val))
         }
+        
+        // 跳转到源代码
+        function toCode() {
+            location.href = 'https://github.com/LXY-1/oop-counter/blob/master/src/lib/counter.js'
+        }
 
+        //跳转到说明文档
+        function toDoc(){
+            location.href = 'https://lxy-1.github.io/counter-jsdoc/'
+        }
 
 
         // 相关dom元素注册事件
         $lxw.addDomEvent(startButton, 'click', start)
         $lxw.addDomEvent(endButton, 'click', end)
         $lxw.addDomEvent(restartButton, 'click', restart)
+        $lxw.addDomEvent(link, 'click', toCode)
+        $lxw.addDomEvent(linkDoc, 'click', toDoc)
         $lxw.addDomEvent(startnumSelect, 'change', setStartNum)
         $lxw.addDomEvent(endnumSelect, 'change', setEndNum)
-
+        
+        
 
         //todo:我的需求就是我使用一个模块，或者是构造函数方法，我直接知道它需要的参数，和参数的简单的说明
         // todo：但是显然自定义的模块，vscode没有这种提示

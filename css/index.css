@@ -23,6 +23,13 @@ body {
 .mg-left{
     margin-left: 12px!important;
 }
+.link-text{
+    cursor: pointer;
+    color: #ff006a;
+}
+.link-text:hover{
+    opacity: .8;
+}
 
 .clock-wrap {
     color: #fff;
