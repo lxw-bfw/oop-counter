@@ -1,0 +1,176 @@
+<!--
+ * @Description: 
+ * @version: 
+ * @Author: lxw
+ * @Date: 2020-01-15 20:56:55
+ * @LastEditors  : lxw
+ * @LastEditTime : 2020-01-17 22:02:52
+ -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="keywords" content="简易计时器、js面向对象开发、jsdoc生成接口文档说明文档">
+    <title>简易计时器——js面向对象</title>
+    <link rel="stylesheet" href="./css/index.css">
+</head>
+
+<body>
+    <div id="clock-wrap" class="clock-wrap">
+        <h2>Simple counter</h2>
+        <h3>js面向对象开发——动态原型模式实现的一个简易计数器 + Jsdoc生成说明文档 + Jsdo 优化vsocde代码智能提示，提高模块化开发的效率</h3>
+        <div class="time">
+            <div><span id="counter">00</span><span>gogogo</span></div>
+        </div>
+        <div id="operay" class="operay">
+            <button type="button" class="lx-button lx-button--info" id="start">开始</button>
+            <button type="button" class="lx-button lx-button--info" id="end" disabled="true">停止</button>
+            <button type="button" class="lx-button lx-button--info" id="restart">重新开始</button>
+            <select name="startNum" id="startNum" class="select-default startNum" id="select-startnum">
+                <!-- 逻辑上第一个option只是为了显示提示信息，无需用户选择，所以展开后我们不需要看到它 -->
+                <option value="" style="display: none;">设置开始值-10</option>
+                <option value="10">10</option>
+                <option value="20">20</option>
+                <option value="30">30</option>
+                <option value="40">40</option>
+                <option value="50">50</option>
+                <option value="60">60</option>
+                <option value="70">70</option>
+            </select>
+            <select name="startNum" id="endNum" class="select-default endNum" id="select-endnum">
+                <option value="" style="display: none;">设置结束值-80</option>
+                <option value="80">80</option>
+                <option value="90">90</option>
+                <option value="100">30</option>
+                <option value="40">40</option>
+                <option value="50">50</option>
+                <option value="60">60</option>
+                <option value="70">70</option>
+            </select>
+            <button class="lx-button lx-button--link mg-left" id="link">源代码</button>
+        </div>
+
+    </div>
+
+    <!-- 简易计时器 -->
+    <script src="./src/lib/counter.js"></script>
+    <!-- 导入封装dom相关操作的兼容性方法 -->
+    <script src="./src/lib/domCompatible.js"></script>
+    <script>
+
+
+
+        // 初始化计时器实例对象--不传参数
+        const cou1 = new Counter() // 不传参数使用默认配置——初始值结束值
+        // 初始化实例对象传参数
+        //   const cou2 = new Counter({
+        //     startNum: 10,
+        //     endNum: 100
+        //   })
+
+        //Jsdoc相关说明：TODO:
+        //文档化提示需求TODO:我的需求就是我使用一个模块，或者是构造函数方法，我直接知道它需要的参数，和参数的简单的说明
+        //显然自定义的模块，vscode没有这种提示
+        //所以我才需要jsdoc配置vscode更强大的智能提示，不仅仅是说项目需要jsdoc生成接口文档
+
+        //TODO:显然vscode对new Counter构造函数创建的实例对象里面的相关属性和方法也没有一个智能提示，所以jsdoc的作用又出现了，如果项目比较小，没有多大关系，我们可以直接查看自己写得模块源码
+        // 但是随着项目越来越大，模块越来越多，显然不是要给很有效率的方式
+
+
+        const startButton = $lxw.queryEle('#start')
+        const endButton = $lxw.queryEle('#end')
+        const restartButton = $lxw.queryEle('#restart')
+        const startnumSelect = $lxw.queryEle('#startNum')
+        const endnumSelect = $lxw.queryEle('#endNum')
+        const linkButton = $lxw.queryEle('#link')
+        const couEle = $lxw.queryEle('#counter')
+
+        // 开始按钮点击--处理程序
+        function start() {
+            // 禁掉开始按钮,开启结束按钮
+            $lxw.setAtr(startButton, 'disabled', true)
+            $lxw.removerAtr(endButton, 'disabled')
+            // 调用简易计时器的start方法
+            cou1.start(function (result, isEnd) {
+                console.log(result, isEnd)
+                // 考虑到有些需要的是小于10的时候数字前面加0有些不需要，所以直接返回不带0的，根据自己需要再去配置
+                result = result < 10 ? '0' + result : result
+                $lxw.setInnerText(couEle, result)
+                if (!isEnd) {
+                    $lxw.setAtr(endButton, 'disabled', true)
+                    $lxw.removerAtr(startButton, 'disabled')
+                }
+            })
+
+        }
+
+        // 结束按钮点击处理程序
+        function end() {
+            $lxw.setAtr(endButton, 'disabled', true)
+            $lxw.removerAtr(startButton, 'disabled')
+            cou1.stop()
+        }
+
+        // 重新开始按钮点击处理程序
+        function restart() {
+            //restart仅仅帮你恢复原始的计数以及清除计时器
+            cou1.restart()
+            //需要手动重新开始
+            start()
+        }
+
+        //设置开始值--业务功能仅仅是设置一个开始数字，和当前数字
+        function setStartNum(e){
+            console.log(e.target)
+            let seleObj = e.target
+            let ind = $lxw.getAtr(seleObj,'selectedIndex')
+            let val = $lxw.getAtr(seleObj,'options')[ind].value
+            cou1.setStartNum(parseInt(val))
+            $lxw.setInnerText(couEle, val)
+        }
+
+        //设置结束值--业务功能仅仅是设置一结束数字
+        function setEndNum(e){
+            console.log(e.target)
+            let seleObj = e.target
+            let ind = $lxw.getAtr(seleObj,'selectedIndex')
+            let val = $lxw.getAtr(seleObj,'options')[ind].value
+            cou1.setEndNum(parseInt(val))
+        }
+
+
+
+        // 相关dom元素注册事件
+        $lxw.addDomEvent(startButton, 'click', start)
+        $lxw.addDomEvent(endButton, 'click', end)
+        $lxw.addDomEvent(restartButton, 'click', restart)
+        $lxw.addDomEvent(startnumSelect, 'change', setStartNum)
+        $lxw.addDomEvent(endnumSelect, 'change', setEndNum)
+
+
+        //todo:我的需求就是我使用一个模块，或者是构造函数方法，我直接知道它需要的参数，和参数的简单的说明
+        // todo：但是显然自定义的模块，vscode没有这种提示
+        // todo:所以我才需要jsdoc配置vscode更强大的智能提示，不仅仅是说项目需要jsdoc生成接口文档
+        //   let cou2 = new Counter({
+        //     startNum: 10,
+        //     endNum: 100
+        //   })
+        // todo:显然vscode对new Counter构造函数创建的实例对象里面的相关属性和方法也没有一个智能提示，所以jsdoc的作用又出现了，如果项目比较小，没有多大关系，我们可以直接查看自己写得模块源码
+        // todo:但是随着项目越来越大，模块越来越多，显然不是要给很有效率的方式
+
+        // cou1.setEndNum(10)
+
+        // cou1.start(function (result, isEnd) {
+        //     console.log(result, isEnd)
+        //     // 考虑到有些需要的是小于10的时候数字前面加0有些不需要，所以直接返回不带0的，根据自己需要再去配置
+        //     result = result < 10 ? '0' + result : result
+        //     couEle.innerText = result
+        // })
+
+    </script>
+</body>
+
+</html>

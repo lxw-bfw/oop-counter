@@ -1,0 +1,35 @@
+{
+    "tags": {
+        "allowUnknownTags": false
+    },
+    "source": {
+        "include": ["./src/api","./src/lib"],
+        "exclude": [],
+        "includePattern": ".+\\.js(doc)?$",
+        "excludePattern": "(^|\\/|\\\\)_"
+    },
+    "plugins": [
+       "plugins/markdown"
+    ],
+    "markdown":{
+      "excludeTags":["author"],
+      "hardwarp":true,
+      "idInHeadings":true
+    },
+    "templates": {
+        "cleverLinks": false,
+        "monospaceLinks": false,
+        "default":{
+            "outputSourceFiles":false,
+            "useLongnameInNav":true
+        }
+    },
+    "opts":{
+        "template":"docstrap-master/template",
+        "encoding":"utf8",
+        "destination":"./project-jsdoc/",
+        "recurse":true,
+        "package":"./package.json",
+        "readme":"./read.md"
+    }
+}
